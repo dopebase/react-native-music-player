@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -12,10 +12,17 @@ import {
 import {musiclibrary} from '../../data';
 import LinearGradient from 'react-native-linear-gradient';
 import PlayerModal from '../../components/PlayerModal';
+import TrackPlayer, {State} from 'react-native-track-player';
+import PlayIcon from '../../assets/icons/play.png';
+import PauseIcon from '../../assets/icons/pause.png';
 
 export default function PlayerHome() {
   const [selectedMusic, setSelectedMusic] = useState(null);
+  const [selectedMusicIndex, setSelectedMusicIndex] = useState(null);
   const [isPlayerModalVisible, setisPlayerModalVisible] = useState(false);
+  const [isPlaying] = useState(false);
+  const [timestamp, setTimestamp] = useState(0);
+  const [statemode, setStatemode] = useState('shuffle')
 
   const PlaylistImageView = () => (
     <>
@@ -33,11 +40,49 @@ export default function PlayerHome() {
     </>
   );
 
+  const onSelectTrack = async (selectedTrack, index) => {
+    setSelectedMusic(selectedTrack);
+    selectedMusicIndex(index);
+    TrackPlayer.skip(index);
+    // playOrPause();
+  };
+
+  const playOrPause = async () => {
+    const state = await TrackPlayer.getState();
+    if (state === State.Playing) {
+      TrackPlayer.play();
+    } else {
+      TrackPlayer.pause();
+    }
+  };
+
+  const onSeekTrack = newTimeStamp => {
+    setTimestamp(newTimeStamp);
+    TrackPlayer.seekTo(newTimeStamp);
+  };
+
+  const onPressNext = () => {
+    setSelectedMusic(
+      musiclibrary[(selectedMusicIndex + 1) % musiclibrary.length],
+    );
+    setSelectedMusicIndex(selectedMusicIndex + 1);
+  };
+
+  const onPressPrev = () => {
+    if (selectedMusicIndex === 0) {
+      return;
+    }
+    setSelectedMusic(
+      musiclibrary[(selectedMusicIndex - 1) % musiclibrary.length],
+    );
+    setSelectedMusicIndex(selectedMusicIndex - 1);
+  };
+
   const renderSingleMusic = ({item, index}) => {
     return (
       <>
         {index === 0 && <PlaylistImageView />}
-        <Pressable onPress={() => setSelectedMusic(item)}>
+        <Pressable onPress={() => onSelectTrack(item, index)}>
           <View>
             <Text style={styles.musicTitle}>{item.title}</Text>
             <Text style={styles.artisteTitle}>{item.artist}</Text>
@@ -50,11 +95,22 @@ export default function PlayerHome() {
   return (
     <View style={styles.container}>
       <SafeAreaView />
-      <PlayerModal
-        onCloseModal={() => setisPlayerModalVisible(false)}
-        isVisible={isPlayerModalVisible}
-        selectedMusic={selectedMusic}
-      />
+      {selectedMusic && (
+        <PlayerModal
+          onCloseModal={() => setisPlayerModalVisible(false)}
+          isVisible={isPlayerModalVisible}
+          isPlaying={isPlaying}
+          playOrPause={playOrPause}
+          selectedMusic={selectedMusic}
+          onSeekTrack={onSeekTrack}
+          timestamp={timestamp}
+          onPressNext={onPressNext}
+          onPressPrev={onPressPrev}
+          playbackMode={statemode}
+          onClickShuffle={()=> setStatemode('shuffle')}
+          onClickLoop={()=> setStatemode('loop')}
+        />
+      )}
       <View style={[styles.widgetContainer, {justifyContent: 'center'}]}>
         <Text style={styles.musicTitle}>My music</Text>
       </View>
@@ -81,11 +137,12 @@ export default function PlayerHome() {
                 </Text>
               </View>
             </View>
-
-            <Image
-              source={require('../../assets/icons/play.png')}
-              style={{height: 30, tintColor: '#fff', width: 30}}
-            />
+            <Pressable onPress={() => playOrPause()}>
+              <Image
+                source={isPlaying ? PlayIcon : PauseIcon}
+                style={{height: 30, tintColor: '#fff', width: 30}}
+              />
+            </Pressable>
           </View>
         </Pressable>
       )}

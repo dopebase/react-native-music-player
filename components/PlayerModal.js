@@ -10,7 +10,20 @@ import PlayIcon from '../assets/icons/play.png';
 import PauseIcon from '../assets/icons/pause.png';
 import MenuIcon from '../assets/icons/down.png';
 
-export default function PlayerModal({isVisible, onCloseModal, selectedMusic}) {
+export default function PlayerModal({
+  isVisible,
+  onCloseModal,
+  selectedMusic,
+  isPlaying,
+  playOrPause,
+  onSeekTrack,
+  timestamp,
+  onPressNext,
+  onPressPrev,
+  playbackMode,
+  onClickShuffle,
+  onClickLoop,
+}) {
   return (
     <Modal
       animationType="slide"
@@ -54,6 +67,9 @@ export default function PlayerModal({isVisible, onCloseModal, selectedMusic}) {
         <Slider
           tapToSeek={true}
           minimumTrackTintColor="#fff"
+          onValueChange={e => {
+            onSeekTrack(Math.floor(e * selectedMusic.duration));
+          }}
           style={{width: '100%', paddingHorizontal: 10}}
         />
         <View
@@ -62,20 +78,43 @@ export default function PlayerModal({isVisible, onCloseModal, selectedMusic}) {
             justifyContent: 'space-between',
             width: '100%',
           }}>
-          <Text style={styles.mainText}>12:11</Text>
-          <Text style={styles.mainText}>12:12</Text>
+          <Text style={styles.mainText}>{timestamp}</Text>
+          <Text style={styles.mainText}>
+            {selectedMusic.duration - timestamp}
+          </Text>
         </View>
         <View style={styles.timeStampHolder}>
-          <Image style={styles.iconWidth} source={ShuffleIcon} />
-          <Image style={styles.iconWidth} source={PrevIcon} />
-          <View style={styles.playButtonHolder}>
+          <Pressable onPress={onClickShuffle}>
+            <Image
+              style={[
+                styles.iconWidth,
+                {tintColor: playbackMode === 'shuffle' ? '#1DB954' : '#fff'},
+              ]}
+              source={ShuffleIcon}
+            />
+          </Pressable>
+          <Pressable onPress={onPressPrev}>
+            <Image style={styles.iconWidth} source={PrevIcon} />
+          </Pressable>
+
+          <Pressable onPress={playOrPause} style={styles.playButtonHolder}>
             <Image
               style={[styles.iconWidth, {tintColor: '#000'}]}
-              source={PlayIcon}
+              source={isPlaying ? PlayIcon : PauseIcon}
             />
-          </View>
-          <Image style={styles.iconWidth} source={NextIcon} />
-          <Image style={styles.iconWidth} source={LoopIcon} />
+          </Pressable>
+          <Pressable onPress={onPressNext}>
+            <Image style={styles.iconWidth} source={NextIcon} />
+          </Pressable>
+          <Pressable onPress={onClickLoop}>
+            <Image
+              style={[
+                styles.iconWidth,
+                {tintColor: playbackMode === 'loop' ? '#1DB954' : '#fff'},
+              ]}
+              source={LoopIcon}
+            />
+          </Pressable>
         </View>
       </LinearGradient>
     </Modal>
