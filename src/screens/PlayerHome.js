@@ -15,6 +15,7 @@ import PlayerModal from '../../components/PlayerModal';
 
 export default function PlayerHome() {
   const [selectedMusic, setSelectedMusic] = useState(null);
+  const [isPlayerModalVisible, setisPlayerModalVisible] = useState(false);
 
   const PlaylistImageView = () => (
     <>
@@ -49,7 +50,11 @@ export default function PlayerHome() {
   return (
     <View style={styles.container}>
       <SafeAreaView />
-      <PlayerModal />
+      <PlayerModal
+        onCloseModal={() => setisPlayerModalVisible(false)}
+        isVisible={isPlayerModalVisible}
+        selectedMusic={selectedMusic}
+      />
       <View style={[styles.widgetContainer, {justifyContent: 'center'}]}>
         <Text style={styles.musicTitle}>My music</Text>
       </View>
@@ -59,25 +64,30 @@ export default function PlayerHome() {
         renderItem={renderSingleMusic}
       />
       {selectedMusic && (
-        <View style={[styles.widgetContainer, {}]}>
-          <View style={{flexDirection: 'row'}}>
-            <Image
-              resizeMode="cover"
-              source={{uri: selectedMusic.artwork}}
-              style={styles.widgetImageStyle}
-            />
-            <View>
-              <Text style={styles.widgetMusicTitle}>{selectedMusic.title}</Text>
-              <Text style={styles.widgetArtisteTitle}>
-                {selectedMusic.artist}
-              </Text>
+        <Pressable onPress={() => setisPlayerModalVisible(true)}>
+          <View style={[styles.widgetContainer, {}]}>
+            <View style={{flexDirection: 'row'}}>
+              <Image
+                resizeMode="cover"
+                source={{uri: selectedMusic.artwork}}
+                style={styles.widgetImageStyle}
+              />
+              <View>
+                <Text style={styles.widgetMusicTitle}>
+                  {selectedMusic.title}
+                </Text>
+                <Text style={styles.widgetArtisteTitle}>
+                  {selectedMusic.artist}
+                </Text>
+              </View>
             </View>
+
+            <Image
+              source={require('../../assets/icons/play.png')}
+              style={{height: 30, tintColor: '#fff', width: 30}}
+            />
           </View>
-          <Image
-            source={require('../../assets/icons/play.png')}
-            style={{height: 30, tintColor: '#fff', width: 30}}
-          />
-        </View>
+        </Pressable>
       )}
     </View>
   );
