@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {View, Text, Modal, Image, StyleSheet, Pressable} from 'react-native';
 import Slider from '@react-native-community/slider';
 import LinearGradient from 'react-native-linear-gradient';
@@ -9,6 +9,8 @@ import LoopIcon from '../assets/icons/loop.png';
 import PlayIcon from '../assets/icons/play.png';
 import PauseIcon from '../assets/icons/pause.png';
 import MenuIcon from '../assets/icons/down.png';
+import {secsToTimestamp} from '../util/timeFormat';
+import { useProgress } from 'react-native-track-player';
 
 export default function PlayerModal({
   isVisible,
@@ -24,6 +26,9 @@ export default function PlayerModal({
   onClickShuffle,
   onClickLoop,
 }) {
+  
+  const { position, buffered, duration } = useProgress()
+
   return (
     <Modal
       animationType="slide"
@@ -71,6 +76,7 @@ export default function PlayerModal({
             onSeekTrack(Math.floor(e * selectedMusic.duration));
           }}
           style={{width: '100%', paddingHorizontal: 10}}
+          value={timestamp / selectedMusic.duration}
         />
         <View
           style={{
@@ -78,9 +84,9 @@ export default function PlayerModal({
             justifyContent: 'space-between',
             width: '100%',
           }}>
-          <Text style={styles.mainText}>{timestamp}</Text>
+          <Text style={styles.mainText}>{secsToTimestamp(timestamp)}</Text>
           <Text style={styles.mainText}>
-            {selectedMusic.duration - timestamp}
+            {secsToTimestamp(selectedMusic.duration - timestamp)}
           </Text>
         </View>
         <View style={styles.timeStampHolder}>
@@ -100,7 +106,7 @@ export default function PlayerModal({
           <Pressable onPress={playOrPause} style={styles.playButtonHolder}>
             <Image
               style={[styles.iconWidth, {tintColor: '#000'}]}
-              source={isPlaying ? PlayIcon : PauseIcon}
+              source={isPlaying ? PauseIcon : PlayIcon}
             />
           </Pressable>
           <Pressable onPress={onPressNext}>

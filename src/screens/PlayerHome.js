@@ -12,17 +12,48 @@ import {
 import {musiclibrary} from '../../data';
 import LinearGradient from 'react-native-linear-gradient';
 import PlayerModal from '../../components/PlayerModal';
-import TrackPlayer, {State} from 'react-native-track-player';
+import TrackPlayer, {
+  useTrackPlayerEvents,
+  Event,
+  State,
+  useProgress,
+} from 'react-native-track-player';
 import PlayIcon from '../../assets/icons/play.png';
 import PauseIcon from '../../assets/icons/pause.png';
+
+const events = [
+  Event.PlaybackState,
+  Event.PlaybackError,
+  Event.RemotePlay,
+  Event.RemotePause,
+];
 
 export default function PlayerHome() {
   const [selectedMusic, setSelectedMusic] = useState(null);
   const [selectedMusicIndex, setSelectedMusicIndex] = useState(null);
   const [isPlayerModalVisible, setisPlayerModalVisible] = useState(false);
-  const [isPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [timestamp, setTimestamp] = useState(0);
-  const [statemode, setStatemode] = useState('shuffle')
+  const [statemode, setStatemode] = useState('shuffle');
+
+  const {position} = useProgress();
+
+  useEffect(() => console.log(`t ${position}`), [position]);
+
+  useTrackPlayerEvents(events, event => {
+    if (event.type === Event.PlaybackError) {
+      console.warn('An error occured while playing the current track.');
+    }
+    if (event.type === Event.PlaybackState) {
+      console.log(event.type);
+    }
+    if (event.type === Event.RemotePlay) {
+      console.log('event.type');
+    }
+    if (event.type === Event.RemotePause) {
+      console.log(event.type);
+    }
+  });
 
   const PlaylistImageView = () => (
     <>
@@ -42,22 +73,33 @@ export default function PlayerHome() {
 
   const onSelectTrack = async (selectedTrack, index) => {
     setSelectedMusic(selectedTrack);
-    selectedMusicIndex(index);
+    setTimestamp(0);
+    setSelectedMusicIndex(index);
     TrackPlayer.skip(index);
-    // playOrPause();
+    playOrPause();
   };
 
-  const playOrPause = async () => {
+
+  TrackPlayer
+
+  const playOrPause = async isCurrentTrack => {
     const state = await TrackPlayer.getState();
-    if (state === State.Playing) {
+    if (state === State.Paused && isCurrentTrack) {
+      setIsPlaying(!isPlaying);
       TrackPlayer.play();
-    } else {
-      TrackPlayer.pause();
+      return;
     }
+
+    if (state === State.Playing && isCurrentTrack) {
+      setIsPlaying(!isPlaying);
+      TrackPlayer.pause();
+      return;
+    }
+    setIsPlaying(true);
+    TrackPlayer.play();
   };
 
   const onSeekTrack = newTimeStamp => {
-    setTimestamp(newTimeStamp);
     TrackPlayer.seekTo(newTimeStamp);
   };
 
@@ -66,6 +108,8 @@ export default function PlayerHome() {
       musiclibrary[(selectedMusicIndex + 1) % musiclibrary.length],
     );
     setSelectedMusicIndex(selectedMusicIndex + 1);
+    TrackPlayer.skipToNext();
+    playOrPause();
   };
 
   const onPressPrev = () => {
@@ -76,6 +120,8 @@ export default function PlayerHome() {
       musiclibrary[(selectedMusicIndex - 1) % musiclibrary.length],
     );
     setSelectedMusicIndex(selectedMusicIndex - 1);
+    TrackPlayer.skipToPrevious();
+    playOrPause();
   };
 
   const renderSingleMusic = ({item, index}) => {
@@ -103,12 +149,12 @@ export default function PlayerHome() {
           playOrPause={playOrPause}
           selectedMusic={selectedMusic}
           onSeekTrack={onSeekTrack}
-          timestamp={timestamp}
+          timestamp={Math.round(position)}
           onPressNext={onPressNext}
           onPressPrev={onPressPrev}
           playbackMode={statemode}
-          onClickShuffle={()=> setStatemode('shuffle')}
-          onClickLoop={()=> setStatemode('loop')}
+          onClickShuffle={() => setStatemode('shuffle')}
+          onClickLoop={() => setStatemode('loop')}
         />
       )}
       <View style={[styles.widgetContainer, {justifyContent: 'center'}]}>
@@ -137,9 +183,9 @@ export default function PlayerHome() {
                 </Text>
               </View>
             </View>
-            <Pressable onPress={() => playOrPause()}>
+            <Pressable onPress={() => playOrPause(true)}>
               <Image
-                source={isPlaying ? PlayIcon : PauseIcon}
+                source={isPlaying ? PauseIcon : PlayIcon}
                 style={{height: 30, tintColor: '#fff', width: 30}}
               />
             </Pressable>
