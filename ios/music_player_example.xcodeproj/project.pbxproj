@@ -14,6 +14,8 @@
 		221F1662FF915CF0EAC1A312 /* libPods-music_player_example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5328753963190C0BB448794A /* libPods-music_player_example.a */; };
 		44F73344B50532FCFE7709DC /* libPods-music_player_example-music_player_exampleTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 384D213E55C8462D12386CC9 /* libPods-music_player_example-music_player_exampleTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		F965529A272943FC00BCD83F /* test.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9655299272943FC00BCD83F /* test.swift */; };
+		F9E3EC15272A1FAA00C8E9EE /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9E3EC14272A1FAA00C8E9EE /* File.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +46,9 @@
 		8F2868009479EF0E28E1B740 /* Pods-music_player_example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-music_player_example.release.xcconfig"; path = "Target Support Files/Pods-music_player_example/Pods-music_player_example.release.xcconfig"; sourceTree = "<group>"; };
 		E5DA00D3EF286EE4A6118664 /* Pods-music_player_example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-music_player_example.debug.xcconfig"; path = "Target Support Files/Pods-music_player_example/Pods-music_player_example.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		F9655298272943FC00BCD83F /* music_player_example-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "music_player_example-Bridging-Header.h"; sourceTree = "<group>"; };
+		F9655299272943FC00BCD83F /* test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test.swift; sourceTree = "<group>"; };
+		F9E3EC14272A1FAA00C8E9EE /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,7 +119,6 @@
 				6FE192CB3B4FD20AA18F5C94 /* Pods-music_player_example-music_player_exampleTests.debug.xcconfig */,
 				72EE07012856959578BCE150 /* Pods-music_player_example-music_player_exampleTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -128,12 +132,15 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				F9655299272943FC00BCD83F /* test.swift */,
+				F9E3EC14272A1FAA00C8E9EE /* File.swift */,
 				13B07FAE1A68108700A75B9A /* music_player_example */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* music_player_exampleTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				3A93799B58708A0F139AEEAC /* Pods */,
+				F9655298272943FC00BCD83F /* music_player_example-Bridging-Header.h */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -208,7 +215,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1240;
 					};
 				};
 			};
@@ -412,6 +419,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				F9E3EC15272A1FAA00C8E9EE /* File.swift in Sources */,
+				F965529A272943FC00BCD83F /* test.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -431,6 +440,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 6FE192CB3B4FD20AA18F5C94 /* Pods-music_player_example-music_player_exampleTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -458,6 +468,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 72EE07012856959578BCE150 /* Pods-music_player_example-music_player_exampleTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = music_player_exampleTests/Info.plist;
@@ -485,6 +496,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = NO;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = music_player_example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -498,6 +510,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = music_player_example;
+				SWIFT_OBJC_BRIDGING_HEADER = "music_player_example-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -511,6 +524,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = NO;
 				INFOPLIST_FILE = music_player_example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -523,6 +537,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = music_player_example;
+				SWIFT_OBJC_BRIDGING_HEADER = "music_player_example-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
