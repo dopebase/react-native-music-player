@@ -11,12 +11,13 @@ import {
 } from 'react-native';
 import {musiclibrary} from '../../data';
 import LinearGradient from 'react-native-linear-gradient';
-import PlayerModal from '../../components/PlayerModal';
+import PlayerModal from '../../components/TrackPlayerScreen';
 import TrackPlayer, {
   useTrackPlayerEvents,
   Event,
   State,
   useProgress,
+  RepeatMode,
 } from 'react-native-track-player';
 import PlayIcon from '../../assets/icons/play.png';
 import PauseIcon from '../../assets/icons/pause.png';
@@ -28,17 +29,23 @@ const events = [
   Event.RemotePause,
 ];
 
-export default function PlayerHome() {
+export default function TrackListScreen() {
   const [selectedMusic, setSelectedMusic] = useState(null);
   const [selectedMusicIndex, setSelectedMusicIndex] = useState(null);
   const [isPlayerModalVisible, setisPlayerModalVisible] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [timestamp, setTimestamp] = useState(0);
-  const [statemode, setStatemode] = useState('shuffle');
+  const [mode, setMode] = useState('shuffle');
 
   const {position} = useProgress();
 
-  useEffect(() => console.log(`t ${position}`), [position]);
+  useEffect(
+    () =>
+      mode === 'off'
+        ? TrackPlayer.setRepeatMode(RepeatMode.Queue)
+        : TrackPlayer.setRepeatMode(RepeatMode.Off),
+    [mode],
+  );
 
   useTrackPlayerEvents(events, event => {
     if (event.type === Event.PlaybackError) {
@@ -79,8 +86,7 @@ export default function PlayerHome() {
     playOrPause();
   };
 
-
-  TrackPlayer
+  TrackPlayer;
 
   const playOrPause = async isCurrentTrack => {
     const state = await TrackPlayer.getState();
@@ -152,9 +158,10 @@ export default function PlayerHome() {
           timestamp={Math.round(position)}
           onPressNext={onPressNext}
           onPressPrev={onPressPrev}
-          playbackMode={statemode}
-          onClickShuffle={() => setStatemode('shuffle')}
-          onClickLoop={() => setStatemode('loop')}
+          playbackMode={mode}
+          onClickLoop={() =>
+            mode === 'loop' ? setMode('loop') : setMode('off')
+          }
         />
       )}
       <View style={[styles.widgetContainer, {justifyContent: 'center'}]}>

@@ -12,7 +12,7 @@ import MenuIcon from '../assets/icons/down.png';
 import {secsToTimestamp} from '../util/timeFormat';
 import { useProgress } from 'react-native-track-player';
 
-export default function PlayerModal({
+export default function TrackPlayerScreen({
   isVisible,
   onCloseModal,
   selectedMusic,

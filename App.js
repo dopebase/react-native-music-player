@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import PlayerHome from './src/screens/PlayerHome';
+import TrackListScreen from './src/screens/TrackListScreen';
 import TrackPlayer from 'react-native-track-player';
 import {musiclibrary} from './data';
 
@@ -12,5 +12,5 @@ export default function App() {
   useEffect(() => {
     setup();
   }, []);
-  return <PlayerHome />;
+  return <TrackListScreen />;
 }
